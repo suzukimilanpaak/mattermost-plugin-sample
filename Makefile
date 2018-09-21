@@ -4,6 +4,7 @@ NPM ?= $(shell command -v npm 2> /dev/null)
 HTTP ?= $(shell command -v http 2> /dev/null)
 CURL ?= $(shell command -v curl 2> /dev/null)
 MANIFEST_FILE ?= plugin.json
+export GO111MODULE=on
 
 # Verify environment, and define PLUGIN_ID, PLUGIN_VERSION, HAS_SERVER and HAS_WEBAPP as needed.
 include build/setup.mk
@@ -20,7 +21,7 @@ apply:
 
 ## Runs govet and gofmt against all packages.
 .PHONY: check-style
-check-style: server/.depensure webapp/.npminstall gofmt govet
+check-style: webapp/.npminstall gofmt govet
 	@echo Checking for style guide compliance
 
 ifneq ($(HAS_WEBAPP),)
@@ -56,16 +57,9 @@ ifneq ($(HAS_SERVER),)
 	@echo Govet success
 endif
 
-## Ensures the server dependencies are installed.
-server/.depensure:
-ifneq ($(HAS_SERVER),)
-	cd server && $(DEP) ensure
-	touch $@
-endif
-
 ## Builds the server, if it exists, including support for multiple architectures.
 .PHONY: server
-server: server/.depensure
+server:
 ifneq ($(HAS_SERVER),)
 	mkdir -p server/dist;
 	cd server && env GOOS=linux GOARCH=amd64 $(GO) build -o dist/plugin-linux-amd64;
@@ -140,7 +134,7 @@ endif
 
 ## Runs any lints and unit tests defined for the server and webapp, if they exist.
 .PHONY: test
-test: server/.depensure webapp/.npminstall
+test: webapp/.npminstall
 ifneq ($(HAS_SERVER),)
 	cd server && $(GO) test -race -v -coverprofile=coverage.txt ./...
 endif
@@ -154,7 +148,6 @@ clean:
 	rm -fr dist/
 ifneq ($(HAS_SERVER),)
 	rm -fr server/dist
-	rm -fr server/.depensure
 endif
 ifneq ($(HAS_WEBAPP),)
 	rm -fr webapp/.npminstall
