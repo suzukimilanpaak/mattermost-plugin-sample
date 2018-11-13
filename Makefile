@@ -53,7 +53,7 @@ endif
 govet:
 ifneq ($(HAS_SERVER),)
 	@echo Running govet
-	@$(GO) vet $$(go list ./server/...) || exit 1
+	@$(GO) tool vet server/ || exit 1
 	@echo Govet success
 endif
 
