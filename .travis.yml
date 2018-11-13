@@ -4,9 +4,6 @@ go:
 env:
   - GO111MODULE=on
 
-install:
-  - curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-
 script:
   - make check-style
   - make test

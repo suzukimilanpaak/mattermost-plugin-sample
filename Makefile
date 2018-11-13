@@ -1,5 +1,4 @@
 GO ?= $(shell command -v go 2> /dev/null)
-DEP ?= $(shell command -v dep 2> /dev/null)
 NPM ?= $(shell command -v npm 2> /dev/null)
 HTTP ?= $(shell command -v http 2> /dev/null)
 CURL ?= $(shell command -v curl 2> /dev/null)
