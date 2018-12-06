@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/mattermost/mattermost-server/model"
 	"github.com/mattermost/mattermost-server/plugin"
 )
 
@@ -23,4 +24,7 @@ func (p *Plugin) ServeHTTP(c *plugin.Context, w http.ResponseWriter, r *http.Req
 	fmt.Fprintf(w, "Hello, world!")
 }
 
-// See https://developers.mattermost.com/extend/plugins/server/reference/
+func (p *Plugin) MessageWillBePosted(c *plugin.Context, post *model.Post) (*model.Post, string) {
+	post.Message = post.Message + "..."
+	return post, ""
+}
